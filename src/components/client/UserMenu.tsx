@@ -48,7 +48,7 @@ export const UserMenu = () => {
         )}
 
         <Link
-          href="/profile/orders"
+          href="/orders"
           className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           <Package className="w-4 h-4" />

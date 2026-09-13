@@ -10,7 +10,7 @@ const axiosClient = axios.create({
   },
 });
 
-// Interceptor Request: Tự động đính kèm Bearer Access Token nếu có
+// Interceptor Request: Luôn đính kèm Bearer token từ Cookie
 axiosClient.interceptors.request.use(
   (config) => {
     const token = Cookies.get("accessToken");
@@ -22,12 +22,13 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Interceptor Response: Tự động refresh token khi gặp lỗi 401 (Unauthorized)
+// Interceptor Response: Xử lý Tự động Refresh Token khi gặp lỗi 401
 axiosClient.interceptors.response.use(
   (response) => response.data,
   async (error) => {
     const originalRequest = error.config;
 
+    // Nếu gặp lỗi 401 và request này chưa thử refresh lại
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const refreshToken = Cookies.get("refreshToken");
@@ -35,37 +36,44 @@ axiosClient.interceptors.response.use(
 
       if (refreshToken && accessToken) {
         try {
-          // Sử dụng BASE_URL thống nhất và gọi đúng route Auth/refresh-token
+          // Gọi API cấp lại token mới
           const res = await axios.post(`${BASE_URL}/Auth/refresh-token`, {
             accessToken,
             refreshToken,
           });
 
-          if (res.data.success) {
-            const newAccessToken = res.data.data.accessToken;
-            const newRefreshToken = res.data.data.refreshToken;
+          const authData = res.data;
+          if (authData?.success && authData?.data) {
+            const newAccessToken = authData.data.accessToken;
+            const newRefreshToken = authData.data.refreshToken;
 
-            // Cập nhật Token mới vào Cookie
-            Cookies.set("accessToken", newAccessToken, { expires: 1 / 96 }); // ~15 phút
-            Cookies.set("refreshToken", newRefreshToken, { expires: 7 });
+            // Lưu token mới vào Cookie với path '/'
+            Cookies.set("accessToken", newAccessToken, {
+              expires: 7,
+              path: "/",
+            });
+            Cookies.set("refreshToken", newRefreshToken, {
+              expires: 7,
+              path: "/",
+            });
 
+            // Thử lại request ban đầu với Token mới
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return axiosClient(originalRequest);
           }
         } catch (refreshError) {
-          // Xóa token và buộc đăng nhập lại khi Refresh Token hết hạn
-          Cookies.remove("accessToken");
-          Cookies.remove("refreshToken");
+          // Xóa toàn bộ Cookie khi Refresh Token cũng hết hạn
+          Cookies.remove("accessToken", { path: "/" });
+          Cookies.remove("refreshToken", { path: "/" });
           if (typeof window !== "undefined") {
             window.location.href = "/login";
           }
+          return Promise.reject(refreshError);
         }
       }
     }
 
-    const errorMessage =
-      error.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
-    return Promise.reject(new Error(errorMessage));
+    return Promise.reject(error);
   },
 );
 
