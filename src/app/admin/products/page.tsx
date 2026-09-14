@@ -7,6 +7,7 @@ import { useGetProducts, useDeleteProduct } from "@/src/hooks/useProduct";
 import { useGetCategories } from "@/src/hooks/useCategory";
 import { ProductDto, ProductStatus } from "@/src/types";
 import { ProductModal } from "@/src/components/admin/ProductModal";
+import { ProductDetailModal } from "@/src/components/admin/ProductDetailModal";
 import { ConfirmModal } from "@/src/components/admin/ConfirmModal";
 import {
   Package,
@@ -15,6 +16,7 @@ import {
   Filter,
   Edit,
   Trash2,
+  Eye,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -26,6 +28,7 @@ export default function AdminProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<ProductDto | null>(
     null,
   );
+  const [viewingProduct, setViewingProduct] = useState<ProductDto | null>(null); // State xem chi tiết sản phẩm
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // State quản lý Modal xác nhận xóa sản phẩm
@@ -205,9 +208,12 @@ export default function AdminProductsPage() {
                 products.map((p) => (
                   <tr
                     key={p.productId}
-                    className="hover:bg-slate-50/80 transition"
+                    className="hover:bg-slate-50/80 transition group"
                   >
-                    <td className="p-4">
+                    <td
+                      className="p-4 cursor-pointer"
+                      onClick={() => setViewingProduct(p)}
+                    >
                       <div className="flex items-center space-x-3">
                         <div className="relative w-10 h-10 rounded-xl overflow-hidden border bg-slate-50 shrink-0">
                           <Image
@@ -218,7 +224,7 @@ export default function AdminProductsPage() {
                           />
                         </div>
                         <div>
-                          <p className="font-bold text-slate-800 line-clamp-1">
+                          <p className="font-bold text-slate-800 group-hover:text-amber-800 transition line-clamp-1">
                             {p.productName}
                           </p>
                           <p className="text-[11px] text-slate-400">
@@ -241,6 +247,16 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="p-4 text-center">
                       <div className="flex items-center justify-center space-x-1">
+                        {/* Nút Xem Chi Tiết */}
+                        <button
+                          onClick={() => setViewingProduct(p)}
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                          title="Xem Chi Tiết"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
+                        {/* Nút Sửa */}
                         <button
                           onClick={() => {
                             setSelectedProduct(p);
@@ -251,6 +267,8 @@ export default function AdminProductsPage() {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
+
+                        {/* Nút Xóa */}
                         <button
                           onClick={() =>
                             handleOpenDeleteModal(p.productId, p.productName)
@@ -296,7 +314,13 @@ export default function AdminProductsPage() {
         )}
       </div>
 
-      {/* Modal CRUD Sản Phẩm */}
+      {/* Modal Xem Chi Tiết Sản Phẩm */}
+      <ProductDetailModal
+        product={viewingProduct}
+        onClose={() => setViewingProduct(null)}
+      />
+
+      {/* Modal CRUD Sản Phẩm (Thêm/Sửa) */}
       {isModalOpen && (
         <ProductModal
           product={selectedProduct}
