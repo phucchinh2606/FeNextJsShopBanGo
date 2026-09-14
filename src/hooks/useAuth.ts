@@ -1,9 +1,18 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiResponse } from "../types/common";
-import { LoginCommand, LoginResponseDto, RegisterCommand } from "../types/auth";
+import {
+  LoginCommand,
+  LoginResponseDto,
+  RegisterCommand,
+  UpdateMyProfileDto,
+  ChangePasswordDto,
+} from "../types/auth";
+import { UserDto } from "../types/user";
 import { authService } from "../services/authService";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
+
+export const PROFILE_QUERY_KEY = ["my-profile"];
 
 export const useRegister = () => {
   return useMutation<ApiResponse<null>, Error, RegisterCommand>({
@@ -32,11 +41,38 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: () => authService.logout(),
     onSettled: () => {
-      // Dù API trả về thành công hay lỗi (ví dụ token đã hết hạn trước đó)
-      // thì phía Client vẫn dọn dẹp toàn bộ dữ liệu phiên đăng nhập.
       logoutStore();
-      queryClient.clear(); // Xóa sạch dữ liệu cache trong React Query
+      queryClient.clear();
       router.push("/login");
     },
+  });
+};
+
+// ================= HOOKS CHO MY PROFILE =================
+
+// Hook lấy thông tin Profile cá nhân
+export const useGetMyProfile = () => {
+  return useQuery({
+    queryKey: PROFILE_QUERY_KEY,
+    queryFn: () => authService.getMyProfile(),
+  });
+};
+
+// Hook cập nhật Profile cá nhân
+export const useUpdateMyProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ApiResponse<UserDto>, Error, UpdateMyProfileDto>({
+    mutationFn: (data: UpdateMyProfileDto) => authService.updateMyProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY });
+    },
+  });
+};
+
+// Hook đổi mật khẩu
+export const useChangePassword = () => {
+  return useMutation<ApiResponse<boolean>, Error, ChangePasswordDto>({
+    mutationFn: (data: ChangePasswordDto) => authService.changePassword(data),
   });
 };

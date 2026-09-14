@@ -10,6 +10,7 @@ import {
   Newspaper,
   Users,
   Store,
+  UserCheck,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -47,6 +48,11 @@ const menuItems = [
     title: "Người dùng",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    title: "Hồ sơ cá nhân",
+    href: "/admin/profile",
+    icon: UserCheck,
   },
 ];
 

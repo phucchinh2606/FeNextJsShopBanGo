@@ -1,3 +1,5 @@
+import { UserRole } from "./user";
+
 export interface RegisterCommand {
   fullName: string;
   email: string;
@@ -34,4 +36,18 @@ export interface RefreshTokenCommand {
 export interface RefreshTokenResponseDto {
   accessToken: string;
   refreshToken: string;
+}
+
+// ================= BỔ SUNG CHO MY PROFILE =================
+
+export interface UpdateMyProfileDto {
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
