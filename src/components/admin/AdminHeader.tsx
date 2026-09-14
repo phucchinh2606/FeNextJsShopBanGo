@@ -1,62 +1,49 @@
 "use client";
 
-import { useLogout } from "@/src/hooks/useAuth";
-import { useAuthStore } from "@/src/store/useAuthStore";
-import { Menu, LogOut, User, Shield } from "lucide-react";
+import { ChevronLeft, LogOut } from "lucide-react";
 
-interface AdminHeaderProps {
+interface HeaderProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 }
 
-export const AdminHeader = ({ isOpen, setIsOpen }: AdminHeaderProps) => {
-  const { user } = useAuthStore();
-  const { mutate: logout, isPending } = useLogout();
-
+export const AdminHeader = ({ isOpen, setIsOpen }: HeaderProps) => {
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-      {/* Nút Toggle Sidebar trên Mobile / Desktop */}
+    <header className="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center space-x-4">
+        {/* Nút mũi tên thu/phóng thay thế icon 3 gạch */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
-          aria-label="Toggle Menu"
+          className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition"
+          aria-label="Toggle Sidebar"
         >
-          <Menu className="w-5 h-5" />
+          <ChevronLeft
+            className={`w-5 h-5 transition-transform duration-300 ${
+              !isOpen ? "rotate-180" : ""
+            }`}
+          />
         </button>
-        <span className="text-sm font-semibold text-slate-700 hidden sm:inline-block">
+
+        <h1 className="text-sm font-bold text-slate-800">
           Hệ thống Quản lý Bán hàng Đồ Gỗ
-        </span>
+        </h1>
       </div>
 
-      {/* Thông tin Admin & Logout */}
+      {/* Thông tin Admin & Nút Đăng xuất */}
       <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-3 border-r border-slate-200 pr-4">
+        <div className="flex items-center space-x-3">
           <div className="w-9 h-9 rounded-full bg-amber-800 text-white flex items-center justify-center font-bold text-sm">
-            {user?.fullName ? (
-              user.fullName.charAt(0).toUpperCase()
-            ) : (
-              <User className="w-4 h-4" />
-            )}
+            A
           </div>
-          <div className="hidden md:block text-left">
-            <div className="text-xs font-bold text-slate-800 flex items-center space-x-1">
-              <span>{user?.fullName || "Admin User"}</span>
-              <Shield className="w-3 h-3 text-amber-600" />
-            </div>
-            <div className="text-[11px] text-slate-500">{user?.email}</div>
+          <div className="hidden sm:block text-xs">
+            <p className="font-bold text-slate-800">Admin System</p>
+            <p className="text-slate-400">admin123@gmail.com</p>
           </div>
         </div>
 
-        {/* Nút Đăng xuất */}
-        <button
-          onClick={() => logout()}
-          disabled={isPending}
-          className="flex items-center space-x-2 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-          title="Đăng xuất khỏi Admin"
-        >
+        <button className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition border border-rose-100">
           <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline-block">Đăng xuất</span>
+          <span>Đăng xuất</span>
         </button>
       </div>
     </header>

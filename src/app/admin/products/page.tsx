@@ -73,19 +73,19 @@ export default function AdminProductsPage() {
     switch (status) {
       case ProductStatus.InStock:
         return (
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
             Còn hàng
           </span>
         );
       case ProductStatus.OutOfStock:
         return (
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+          <span className="inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
             Hết hàng
           </span>
         );
       case ProductStatus.Discontinued:
         return (
-          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+          <span className="inline-block whitespace-nowrap px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
             Ngừng kinh doanh
           </span>
         );
@@ -158,14 +158,16 @@ export default function AdminProductsPage() {
       {/* Table Data */}
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200">
               <tr>
                 <th className="p-4">Sản Phẩm</th>
                 <th className="p-4">Danh Mục</th>
                 <th className="p-4 text-right">Giá Bán</th>
                 <th className="p-4 text-center">Tồn Kho</th>
-                <th className="p-4 text-center">Trạng Thái</th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  Trạng Thái
+                </th>
                 <th className="p-4 text-center">Thao Tác</th>
               </tr>
             </thead>
@@ -228,13 +230,13 @@ export default function AdminProductsPage() {
                     <td className="p-4 font-medium text-slate-600">
                       {p.categoryName}
                     </td>
-                    <td className="p-4 text-right font-bold text-amber-900">
+                    <td className="p-4 text-right font-bold text-amber-900 whitespace-nowrap">
                       {p.price.toLocaleString("vi-VN")} đ
                     </td>
                     <td className="p-4 text-center font-bold text-slate-700">
                       {p.stockQuantity}
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-4 text-center whitespace-nowrap">
                       {renderStatusBadge(p.status)}
                     </td>
                     <td className="p-4 text-center">

@@ -9,7 +9,6 @@ import {
   FolderTree,
   Newspaper,
   Users,
-  ChevronLeft,
   Store,
 } from "lucide-react";
 
@@ -61,7 +60,7 @@ export const AdminSidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       }`}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
+      <div className="flex items-center justify-center h-16 px-4 border-b border-slate-800">
         <Link
           href="/admin/dashboard"
           className="flex items-center space-x-3 overflow-hidden"
@@ -75,16 +74,6 @@ export const AdminSidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             </span>
           )}
         </Link>
-
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          aria-label="Toggle Sidebar"
-        >
-          <ChevronLeft
-            className={`w-5 h-5 transition-transform duration-300 ${!isOpen ? "rotate-180" : ""}`}
-          />
-        </button>
       </div>
 
       {/* Navigation Menu */}
