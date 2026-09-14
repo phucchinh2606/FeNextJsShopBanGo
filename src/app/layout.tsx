@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "../providers/ReactQueryProvider";
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// Font Sans-serif cho văn bản thường
+const inter = Inter({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+// Font Serif sang trọng cho Tiêu đề
+const playfair = Playfair_Display({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-playfair",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <ReactQueryProvider>{children}</ReactQueryProvider>

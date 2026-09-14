@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   Filter,
@@ -16,6 +16,9 @@ import { ProductCard } from "@/src/components/client/ProductCard";
 import { Footer } from "@/src/components/client/Footer";
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const categoryIdFromUrl = searchParams.get("categoryId");
+
   // States quản lý bộ lọc & phân trang
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -25,6 +28,13 @@ export default function ProductsPage() {
   const [isDescending, setIsDescending] = useState<boolean>(true);
   const [pageNumber, setPageNumber] = useState(1);
   const pageSize = 12;
+
+  // Cập nhật selectedCategory khi URL thay đổi
+  useEffect(() => {
+    if (categoryIdFromUrl) {
+      setSelectedCategory(categoryIdFromUrl);
+    }
+  }, [categoryIdFromUrl]);
 
   // Lấy dữ liệu danh mục & sản phẩm
   const { data: categoryData } = useGetCategories();

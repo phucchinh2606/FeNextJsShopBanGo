@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Header } from "@/src/components/client/Header";
 import {
   ShoppingCart,
@@ -15,8 +16,9 @@ import {
   Upload,
   UserCheck,
   CheckCircle2,
+  Package,
 } from "lucide-react";
-import { useGetProductById } from "@/src/hooks/useProduct";
+import { useGetProductById, useGetProducts } from "@/src/hooks/useProduct";
 import { useCreateReview, useGetProductReviews } from "@/src/hooks/useReview";
 import { useAddToCart } from "@/src/hooks/useCart";
 import { Footer } from "@/src/components/client/Footer";
@@ -49,6 +51,32 @@ export default function ProductDetailPage() {
   const product = productResponse?.data;
   const reviews = reviewsResponse?.data || [];
 
+  // 1. Lấy danh sách sản phẩm cùng danh mục gốc
+  const { data: relatedProductsResponse, isLoading: isRelatedLoading } =
+    useGetProducts({
+      categoryId: product?.categoryId,
+      pageSize: 8,
+      pageNumber: 1,
+    });
+
+  // 2. Lấy danh sách sản phẩm chung phòng trường hợp không có sản phẩm cùng danh mục
+  const { data: fallbackProductsResponse } = useGetProducts({
+    pageSize: 8,
+    pageNumber: 1,
+  });
+
+  // Lọc sản phẩm hiện tại khỏi gợi ý
+  let relatedProducts = (relatedProductsResponse?.data?.items || []).filter(
+    (item) => item.productId !== productId,
+  );
+
+  // Nếu không có sản phẩm cùng danh mục, tự động dùng danh sách sản phẩm mới nhất làm gợi ý
+  if (relatedProducts.length === 0) {
+    relatedProducts = (fallbackProductsResponse?.data?.items || []).filter(
+      (item) => item.productId !== productId,
+    );
+  }
+
   // Tính điểm đánh giá trung bình
   const averageRating =
     reviews.length > 0
@@ -57,16 +85,14 @@ export default function ProductDetailPage() {
         ).toFixed(1)
       : "5.0";
 
-  // Tổng hợp tất cả ảnh (ảnh chính + ảnh phụ subImageUrls)
+  // Tổng hợp tất cả ảnh
   const allProductImages = product
     ? [product.imageUrl, ...(product.subImageUrls || [])].filter(Boolean)
     : [];
 
-  // Ảnh đang hiển thị chính
   const mainImageUrl =
     selectedImage || product?.imageUrl || "/placeholder-wood.jpg";
 
-  // Xử lý chọn ảnh đính kèm cho review
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -82,7 +108,6 @@ export default function ProductDetailPage() {
     setPreviewImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Submit Form Đánh Giá
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
     if (!comment.trim()) return;
@@ -147,9 +172,8 @@ export default function ProductDetailPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Phần 1: Chi Tiết Sản Phẩm & Gallery */}
+        {/* Chi Tiết Sản Phẩm & Gallery */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Slider / Image Viewer */}
           <div className="space-y-4">
             <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-inner">
               <Image
@@ -162,7 +186,6 @@ export default function ProductDetailPage() {
               />
             </div>
 
-            {/* List ảnh thumbnail sản phẩm */}
             {allProductImages.length > 1 && (
               <div className="flex items-center space-x-3 overflow-x-auto pb-2">
                 {allProductImages.map((imgUrl, idx) => {
@@ -190,7 +213,6 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Thông tin sản phẩm */}
           <div className="space-y-6 flex flex-col justify-between">
             <div>
               <span className="text-xs font-semibold uppercase tracking-wider text-amber-800 bg-amber-50 px-3 py-1 rounded-full">
@@ -200,7 +222,6 @@ export default function ProductDetailPage() {
                 {product.productName}
               </h1>
 
-              {/* Rating summary */}
               <div className="flex items-center space-x-2 mt-2">
                 <div className="flex text-amber-500">
                   {[...Array(5)].map((_, i) => (
@@ -227,7 +248,6 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Thông số kỹ thuật */}
             <div className="border-y border-gray-100 py-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Chất liệu:</span>
@@ -244,7 +264,9 @@ export default function ProductDetailPage() {
               <div className="flex justify-between">
                 <span className="text-gray-500">Tình trạng:</span>
                 <span
-                  className={`font-semibold ${isOutOfStock ? "text-red-600" : "text-emerald-600"}`}
+                  className={`font-semibold ${
+                    isOutOfStock ? "text-red-600" : "text-emerald-600"
+                  }`}
                 >
                   {isOutOfStock
                     ? "Hết hàng"
@@ -253,7 +275,6 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Số lượng & Nút Thêm vào giỏ */}
             {!isOutOfStock && (
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -298,7 +319,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Chính sách bán hàng */}
             <div className="grid grid-cols-3 gap-3 pt-2 text-center text-xs text-gray-600">
               <div className="p-3 rounded-xl bg-gray-50">
                 <ShieldCheck className="w-5 h-5 mx-auto text-amber-800 mb-1" />
@@ -327,7 +347,7 @@ export default function ProductDetailPage() {
           </p>
         </div>
 
-        {/* Phần 2: Đánh Giá Sản Phẩm (Reviews & Form) */}
+        {/* Đánh Giá Sản Phẩm */}
         <div className="mt-8 bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm space-y-8">
           <div>
             <h2 className="text-xl font-serif font-bold text-gray-900">
@@ -338,7 +358,6 @@ export default function ProductDetailPage() {
             </p>
           </div>
 
-          {/* Form Gửi Đánh Giá Mới */}
           <form
             onSubmit={handleSubmitReview}
             className="bg-gray-50 p-6 rounded-2xl border border-gray-200/60 space-y-4"
@@ -356,7 +375,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Select Stars */}
             <div className="flex items-center space-x-2">
               <span className="text-xs font-semibold text-gray-600">
                 Đánh giá điểm:
@@ -381,19 +399,17 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Comment Area */}
             <div>
               <textarea
                 rows={3}
                 required
-                placeholder="Chia sẻ nhận xét của bạn về chất lượng gỗ, đường nét điêu khắc..."
+                placeholder="Chia sẻ nhận xét của bạn..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 className="w-full p-3 text-xs sm:text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-700 focus:outline-none"
               />
             </div>
 
-            {/* Upload Images */}
             <div>
               <label className="inline-flex items-center space-x-2 text-xs font-semibold text-amber-800 hover:text-amber-900 cursor-pointer bg-white px-3 py-2 rounded-xl border border-gray-300">
                 <Upload className="w-4 h-4" />
@@ -407,7 +423,6 @@ export default function ProductDetailPage() {
                 />
               </label>
 
-              {/* Preview Uploaded Images */}
               {previewImageUrls.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {previewImageUrls.map((url, idx) => (
@@ -443,7 +458,6 @@ export default function ProductDetailPage() {
             </button>
           </form>
 
-          {/* List Đánh Giá */}
           {isReviewsLoading ? (
             <div className="space-y-4 animate-pulse">
               {[...Array(2)].map((_, i) => (
@@ -491,7 +505,6 @@ export default function ProductDetailPage() {
                     {rev.comment}
                   </p>
 
-                  {/* Ảnh đính kèm trong review */}
                   {rev.imageUrls && rev.imageUrls.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-2">
                       {rev.imageUrls.map((img, index) => (
@@ -510,6 +523,61 @@ export default function ProductDetailPage() {
                     </div>
                   )}
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sản Phẩm Tương Tự (Gợi ý Cùng Danh Mục) */}
+        <div className="mt-8 bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+          <div className="flex items-center space-x-2 border-b border-gray-100 pb-4">
+            <Package className="w-5 h-5 text-amber-800" />
+            <h2 className="text-xl font-serif font-bold text-gray-900">
+              Sản Phẩm Tương Tự
+            </h2>
+          </div>
+
+          {isRelatedLoading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-pulse">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-64 bg-gray-100 rounded-2xl" />
+              ))}
+            </div>
+          ) : relatedProducts.length === 0 ? (
+            <p className="text-xs text-gray-500 py-4 text-center">
+              Chưa có sản phẩm tương tự nào.
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {relatedProducts.slice(0, 4).map((item) => (
+                <Link
+                  key={item.productId}
+                  href={`/products/${item.productId}`}
+                  className="group bg-gray-50/50 rounded-2xl p-3 border border-gray-100 hover:border-amber-800/30 hover:shadow-md transition duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-white mb-3">
+                      <Image
+                        src={item.imageUrl || "/placeholder-wood.jpg"}
+                        alt={item.productName}
+                        fill
+                        className="object-cover group-hover:scale-105 transition duration-300"
+                      />
+                    </div>
+                    <h3 className="text-xs font-bold text-gray-800 group-hover:text-amber-800 transition line-clamp-2 leading-snug">
+                      {item.productName}
+                    </h3>
+                  </div>
+
+                  <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-900">
+                      {item.price.toLocaleString("vi-VN")} đ
+                    </span>
+                    <span className="text-[10px] text-gray-500 bg-white px-2 py-0.5 rounded-md border border-gray-100">
+                      Xem
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

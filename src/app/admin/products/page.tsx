@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { useGetProducts, useDeleteProduct } from "@/src/hooks/useProduct";
 import { useGetCategories } from "@/src/hooks/useCategory";
 import { ProductDto, ProductStatus } from "@/src/types";
 import { ProductModal } from "@/src/components/admin/ProductModal";
+import { ConfirmModal } from "@/src/components/admin/ConfirmModal";
 import {
   Package,
   Plus,
@@ -26,6 +28,12 @@ export default function AdminProductsPage() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // State quản lý Modal xác nhận xóa sản phẩm
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
   const { data: categoryRes } = useGetCategories();
   const categories = categoryRes?.data || [];
 
@@ -41,10 +49,24 @@ export default function AdminProductsPage() {
   const products = productRes?.data?.items || [];
   const totalPages = productRes?.data?.totalPages || 1;
 
-  const handleDelete = (id: string) => {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      deleteMutation.mutate(id);
-    }
+  // Mở Modal xác nhận xóa
+  const handleOpenDeleteModal = (id: string, name: string) => {
+    setDeleteTarget({ id, name });
+  };
+
+  // Thực thi xóa sản phẩm khi bấm "Đồng ý"
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    deleteMutation.mutate(deleteTarget.id, {
+      onSuccess: () => {
+        toast.success(`Đã xóa sản phẩm "${deleteTarget.name}" thành công!`);
+        setDeleteTarget(null);
+      },
+      onError: () => {
+        toast.error("Có lỗi xảy ra, không thể xóa sản phẩm này.");
+      },
+    });
   };
 
   const renderStatusBadge = (status: ProductStatus) => {
@@ -228,7 +250,9 @@ export default function AdminProductsPage() {
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(p.productId)}
+                          onClick={() =>
+                            handleOpenDeleteModal(p.productId, p.productName)
+                          }
                           className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                           title="Xóa"
                         >
@@ -270,13 +294,23 @@ export default function AdminProductsPage() {
         )}
       </div>
 
-      {/* Modal CRUD */}
+      {/* Modal CRUD Sản Phẩm */}
       {isModalOpen && (
         <ProductModal
           product={selectedProduct}
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
+      {/* Modal Xác Nhận Xóa */}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Xóa sản phẩm"
+        description={`Bạn có chắc chắn muốn xóa sản phẩm "${deleteTarget?.name}"? Hành động này không thể hoàn tác.`}
+        isLoading={deleteMutation.isPending}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
