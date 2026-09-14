@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { useGetNewsList, useDeleteNews } from "@/src/hooks/useNews";
 import { NewsDto, NewsStatus } from "@/src/types";
 import { NewsModal } from "@/src/components/admin/NewsModal";
+import { ConfirmModal } from "@/src/components/admin/ConfirmModal";
 import {
   Newspaper,
   Plus,
@@ -25,6 +27,12 @@ export default function AdminNewsPage() {
   const [selectedNews, setSelectedNews] = useState<NewsDto | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // State cho Modal xác nhận xóa
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
+
   const { data: newsRes, isLoading } = useGetNewsList({
     pageNumber,
     pageSize: 10,
@@ -38,10 +46,24 @@ export default function AdminNewsPage() {
   const newsList = newsRes?.data?.items || [];
   const totalPages = newsRes?.data?.totalPages || 1;
 
-  const handleDelete = (id: string, title: string) => {
-    if (confirm(`Bạn có chắc chắn muốn xóa bài viết "${title}"?`)) {
-      deleteMutation.mutate(id);
-    }
+  // Mở Modal xác nhận xóa
+  const handleOpenDeleteModal = (id: string, title: string) => {
+    setDeleteTarget({ id, title });
+  };
+
+  // Xử lý xóa bài viết khi bấm "Đồng ý"
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    deleteMutation.mutate(deleteTarget.id, {
+      onSuccess: () => {
+        toast.success(`Đã xóa bài viết "${deleteTarget.title}" thành công!`);
+        setDeleteTarget(null);
+      },
+      onError: () => {
+        toast.error("Có lỗi xảy ra, không thể xóa bài viết này.");
+      },
+    });
   };
 
   const renderStatusBadge = (status: NewsStatus) => {
@@ -224,7 +246,9 @@ export default function AdminNewsPage() {
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(n.newsId, n.title)}
+                          onClick={() =>
+                            handleOpenDeleteModal(n.newsId, n.title)
+                          }
                           className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                           title="Xóa"
                         >
@@ -266,13 +290,23 @@ export default function AdminNewsPage() {
         )}
       </div>
 
-      {/* Modal CRUD */}
+      {/* Modal CRUD News */}
       {isModalOpen && (
         <NewsModal
           newsItem={selectedNews}
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
+      {/* Modal Xác Nhận Xóa */}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Xóa bài viết"
+        description={`Bạn có chắc chắn muốn xóa bài viết "${deleteTarget?.title}"? Hành động này không thể hoàn tác.`}
+        isLoading={deleteMutation.isPending}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { useGetCategories, useDeleteCategory } from "@/src/hooks/useCategory";
 import { CategoryDto } from "@/src/types";
 import { CategoryModal } from "@/src/components/admin/CategoryModal";
+import { ConfirmModal } from "@/src/components/admin/ConfirmModal";
 import {
   FolderTree,
   Plus,
@@ -11,6 +13,7 @@ import {
   Edit,
   Trash2,
   CornerDownRight,
+  Folder,
 } from "lucide-react";
 
 export default function AdminCategoriesPage() {
@@ -20,29 +23,87 @@ export default function AdminCategoriesPage() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // State cho Modal xác nhận xóa thay thế confirm()
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
   const { data: response, isLoading } = useGetCategories();
   const deleteMutation = useDeleteCategory();
 
-  const categories = response?.data || [];
+  const rawCategories = response?.data || [];
 
-  // Lọc theo từ khóa tìm kiếm
-  const filteredCategories = categories.filter(
-    (c) =>
-      c.categoryName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  // Xử lý danh sách phân cấp (Hierarchy Layout)
+  const displayCategories = useMemo(() => {
+    if (!rawCategories.length) return [];
+
+    // Nếu đang tìm kiếm, hiển thị danh sách phẳng kết quả
+    if (searchTerm.trim()) {
+      return rawCategories.filter(
+        (c) =>
+          c.categoryName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          c.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    // Sắp xếp danh mục con nằm ngay bên dưới danh mục cha
+    const result: (CategoryDto & { level: number })[] = [];
+    const rootCategories = rawCategories.filter(
+      (c) =>
+        !c.parentId || c.parentId === "00000000-0000-0000-0000-000000000000",
+    );
+
+    const processCategory = (category: CategoryDto, level: number) => {
+      result.push({ ...category, level });
+
+      // Lấy danh mục con từ subCategories hoặc lọc từ danh sách gốc
+      const subCats =
+        category.subCategories && category.subCategories.length > 0
+          ? category.subCategories
+          : rawCategories.filter((c) => c.parentId === category.categoryId);
+
+      subCats.forEach((sub) => processCategory(sub, level + 1));
+    };
+
+    rootCategories.forEach((root) => processCategory(root, 0));
+
+    // Thêm các danh mục còn lại nếu bị thiếu liên kết cha
+    const processedIds = new Set(result.map((r) => r.categoryId));
+    rawCategories.forEach((c) => {
+      if (!processedIds.has(c.categoryId)) {
+        result.push({ ...c, level: 0 });
+      }
+    });
+
+    return result;
+  }, [rawCategories, searchTerm]);
 
   // Map lấy tên danh mục cha
   const getParentName = (parentId?: string | null) => {
     if (!parentId) return null;
-    const parent = categories.find((c) => c.categoryId === parentId);
+    const parent = rawCategories.find((c) => c.categoryId === parentId);
     return parent ? parent.categoryName : null;
   };
 
-  const handleDelete = (id: string, name: string) => {
-    if (confirm(`Bạn có chắc chắn muốn xóa danh mục "${name}"?`)) {
-      deleteMutation.mutate(id);
-    }
+  // Mở Modal xác nhận xóa
+  const handleOpenDeleteModal = (id: string, name: string) => {
+    setDeleteTarget({ id, name });
+  };
+
+  // Thực thi xóa khi người dùng chọn "Đồng ý"
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    deleteMutation.mutate(deleteTarget.id, {
+      onSuccess: () => {
+        toast.success(`Đã xóa danh mục "${deleteTarget.name}" thành công!`);
+        setDeleteTarget(null);
+      },
+      onError: () => {
+        toast.error("Có lỗi xảy ra, không thể xóa danh mục này.");
+      },
+    });
   };
 
   return (
@@ -114,26 +175,40 @@ export default function AdminCategoriesPage() {
                     </td>
                   </tr>
                 ))
-              ) : filteredCategories.length === 0 ? (
+              ) : displayCategories.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="p-12 text-center text-slate-400">
                     Không tìm thấy danh mục nào
                   </td>
                 </tr>
               ) : (
-                filteredCategories.map((c) => {
+                displayCategories.map((c) => {
                   const parentName = getParentName(c.parentId);
+                  const level =
+                    (c as CategoryDto & { level?: number }).level || 0;
+
                   return (
                     <tr
                       key={c.categoryId}
                       className="hover:bg-slate-50/80 transition"
                     >
                       <td className="p-4 font-bold text-slate-800">
-                        <div className="flex items-center space-x-1.5">
-                          {c.parentId && (
-                            <CornerDownRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <div
+                          className="flex items-center space-x-2"
+                          style={{ paddingLeft: `${level * 24}px` }}
+                        >
+                          {level > 0 ? (
+                            <CornerDownRight className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                          ) : (
+                            <Folder className="w-4 h-4 text-amber-800 shrink-0 fill-amber-100" />
                           )}
-                          <span>{c.categoryName}</span>
+                          <span
+                            className={
+                              level > 0 ? "font-medium text-slate-700" : ""
+                            }
+                          >
+                            {c.categoryName}
+                          </span>
                         </div>
                       </td>
                       <td className="p-4">
@@ -164,7 +239,10 @@ export default function AdminCategoriesPage() {
                           </button>
                           <button
                             onClick={() =>
-                              handleDelete(c.categoryId, c.categoryName)
+                              handleOpenDeleteModal(
+                                c.categoryId,
+                                c.categoryName,
+                              )
                             }
                             className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                             title="Xóa"
@@ -182,13 +260,23 @@ export default function AdminCategoriesPage() {
         </div>
       </div>
 
-      {/* Modal CRUD */}
+      {/* Modal CRUD Category */}
       {isModalOpen && (
         <CategoryModal
           category={selectedCategory}
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
+      {/* Modal Xác nhận Xóa */}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Xóa danh mục"
+        description={`Bạn có chắc chắn muốn xóa danh mục "${deleteTarget?.name}"? Hành động này không thể hoàn tác.`}
+        isLoading={deleteMutation.isPending}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
