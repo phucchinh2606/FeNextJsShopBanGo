@@ -8,6 +8,7 @@ import {
   ShoppingCart,
   FolderTree,
   Newspaper,
+  Users,
   ChevronLeft,
   Store,
 } from "lucide-react";
@@ -42,6 +43,11 @@ const menuItems = [
     title: "Tin tức",
     href: "/admin/news",
     icon: Newspaper,
+  },
+  {
+    title: "Người dùng",
+    href: "/admin/users",
+    icon: Users,
   },
 ];
 
