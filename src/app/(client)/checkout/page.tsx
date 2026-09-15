@@ -39,10 +39,21 @@ export default function CheckoutPage() {
   const cart = cartResponse?.data;
   const allItems = cart?.items || [];
 
-  // Lọc ra các món mà người dùng đã chọn từ trang Cart
-  const checkoutItems = allItems.filter((item) =>
-    selectedCartItemIds.includes(item.cartItemId),
-  );
+  // Lọc sản phẩm chính xác (không phân biệt chữ hoa/thường và hỗ trợ mọi trường ID)
+  const checkoutItems = allItems.filter((item) => {
+    const currentItemId = (
+      item.cartItemId ||
+      (item as any).id ||
+      item.productId ||
+      ""
+    )
+      .toString()
+      .toLowerCase();
+
+    return selectedCartItemIds.some(
+      (selectedId) => selectedId.trim().toLowerCase() === currentItemId,
+    );
+  });
 
   const totalAmount = checkoutItems.reduce(
     (acc, item) => acc + item.totalPrice,
@@ -74,11 +85,11 @@ export default function CheckoutPage() {
       {
         onSuccess: (res) => {
           const orderData = res?.data;
-          // Nếu có link thanh toán online (VnPay/Momo/Stripe), chuyển hướng khách hàng
+          // Nếu có link thanh toán PayOS (VietQR), chuyển hướng khách hàng sang cổng thanh toán
           if (orderData?.paymentUrl) {
             window.location.href = orderData.paymentUrl;
           } else {
-            // Thanh toán COD thành công -> chuyển về trang thông báo/đơn hàng
+            // Thanh toán COD thành công -> chuyển về trang đơn hàng
             router.push(`/orders/${orderData?.orderId || ""}?success=true`);
           }
         },
@@ -217,62 +228,22 @@ export default function CheckoutPage() {
                 </div>
               </label>
 
-              {/* VNPAY */}
+              {/* PayOS (VietQR) */}
               <label
-                onClick={() => setPaymentMethod(PaymentMethod.VnPay)}
+                onClick={() => setPaymentMethod(PaymentMethod.PayOS)}
                 className={`p-4 rounded-2xl border cursor-pointer transition flex items-center space-x-3 ${
-                  paymentMethod === PaymentMethod.VnPay
+                  paymentMethod === PaymentMethod.PayOS
                     ? "border-amber-800 bg-amber-50/20 ring-1 ring-amber-800"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <CreditCard className="w-6 h-6 text-blue-600" />
+                <CreditCard className="w-6 h-6 text-emerald-600" />
                 <div>
                   <span className="text-xs font-bold text-gray-900 block">
-                    Ví VNPAY / QR
+                    Chuyển khoản VietQR (payOS)
                   </span>
                   <span className="text-[10px] text-gray-500">
-                    Thanh toán qua ứng dụng ngân hàng
-                  </span>
-                </div>
-              </label>
-
-              {/* MOMO */}
-              <label
-                onClick={() => setPaymentMethod(PaymentMethod.Momo)}
-                className={`p-4 rounded-2xl border cursor-pointer transition flex items-center space-x-3 ${
-                  paymentMethod === PaymentMethod.Momo
-                    ? "border-amber-800 bg-amber-50/20 ring-1 ring-amber-800"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <CreditCard className="w-6 h-6 text-pink-600" />
-                <div>
-                  <span className="text-xs font-bold text-gray-900 block">
-                    Ví MoMo
-                  </span>
-                  <span className="text-[10px] text-gray-500">
-                    Thanh toán nhanh qua MoMo
-                  </span>
-                </div>
-              </label>
-
-              {/* STRIPE */}
-              <label
-                onClick={() => setPaymentMethod(PaymentMethod.Stripe)}
-                className={`p-4 rounded-2xl border cursor-pointer transition flex items-center space-x-3 ${
-                  paymentMethod === PaymentMethod.Stripe
-                    ? "border-amber-800 bg-amber-50/20 ring-1 ring-amber-800"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <CreditCard className="w-6 h-6 text-purple-600" />
-                <div>
-                  <span className="text-xs font-bold text-gray-900 block">
-                    Thẻ Quốc Tế (Stripe)
-                  </span>
-                  <span className="text-[10px] text-gray-500">
-                    Visa, Mastercard, JCB
+                    Quét mã QR bằng App Ngân Hàng (Duyệt tự động)
                   </span>
                 </div>
               </label>
@@ -291,7 +262,7 @@ export default function CheckoutPage() {
             <div className="space-y-3 max-h-80 overflow-y-auto pr-1 divide-y divide-gray-100">
               {checkoutItems.map((item) => (
                 <div
-                  key={item.cartItemId}
+                  key={item.cartItemId || (item as any).id || item.productId}
                   className="pt-3 first:pt-0 flex items-center space-x-3"
                 >
                   <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-gray-50 border shrink-0">

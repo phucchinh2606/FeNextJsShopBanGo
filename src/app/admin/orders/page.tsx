@@ -113,7 +113,7 @@ export default function AdminOrdersPage() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Tìm theo Mã đơn / Mã khách hàng / Địa chỉ..."
+            placeholder="Tìm theo Mã đơn (OrderCode) / SĐT / Tên KH..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -212,7 +212,9 @@ export default function AdminOrdersPage() {
                     className="hover:bg-slate-50/80 transition"
                   >
                     <td className="p-4 font-bold text-slate-900">
-                      #{order.orderId.substring(0, 8).toUpperCase()}
+                      #
+                      {order.orderCode ||
+                        order.orderId.substring(0, 8).toUpperCase()}
                     </td>
                     <td className="p-4 text-slate-600">
                       {new Date(order.orderDate).toLocaleDateString("vi-VN")}

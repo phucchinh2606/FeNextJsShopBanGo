@@ -5,6 +5,7 @@ import {
   CancelOrderCommand,
   CreateOrderCommand,
   GetAdminOrdersQuery,
+  PaymentStatus,
   UpdateOrderStatusCommand,
 } from "../types";
 
@@ -20,11 +21,29 @@ export const useGetMyOrders = () => {
   });
 };
 
-export const useGetOrderById = (id: string) => {
+export const useGetOrderById = (id: string, shouldPoll = false) => {
   return useQuery({
     queryKey: [...ORDER_QUERY_KEY, id],
     queryFn: () => orderService.getOrderById(id),
     enabled: !!id,
+    refetchInterval: shouldPoll
+      ? (query) =>
+          query.state.data?.data?.paymentStatus === PaymentStatus.Paid
+            ? false
+            : 1500
+      : false,
+  });
+};
+
+export const useConfirmPayOSPayment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (orderId: string) => orderService.confirmPayOSPayment(orderId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ORDER_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
+    },
   });
 };
 

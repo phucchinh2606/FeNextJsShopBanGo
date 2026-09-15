@@ -21,13 +21,17 @@ export default function CartPage() {
   const cart = cartResponse?.data;
   const items = cart?.items || [];
 
+  // Helper lấy ID chuẩn xác cho item trong giỏ
+  const getItemUniqueId = (item: any) =>
+    (item.cartItemId || item.id || item.productId || "").toString();
+
   // Mảng lưu ID các item được tích chọn
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Tự động tích chọn tất cả item khi mới tải xong giỏ hàng
   useEffect(() => {
     if (items.length > 0 && selectedIds.length === 0) {
-      setSelectedIds(items.map((item) => item.cartItemId));
+      setSelectedIds(items.map((item) => getItemUniqueId(item)));
     }
   }, [items]);
 
@@ -36,22 +40,23 @@ export default function CartPage() {
     if (selectedIds.length === items.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(items.map((item) => item.cartItemId));
+      setSelectedIds(items.map((item) => getItemUniqueId(item)));
     }
   };
 
   // Chọn / Bỏ chọn 1 item
-  const handleToggleSelect = (cartItemId: string) => {
+  const handleToggleSelect = (item: any) => {
+    const id = getItemUniqueId(item);
     setSelectedIds((prev) =>
-      prev.includes(cartItemId)
-        ? prev.filter((id) => id !== cartItemId)
-        : [...prev, cartItemId],
+      prev.includes(id)
+        ? prev.filter((itemKey) => itemKey !== id)
+        : [...prev, id],
     );
   };
 
   // Tính tổng tiền các sản phẩm được chọn
   const selectedItems = items.filter((item) =>
-    selectedIds.includes(item.cartItemId),
+    selectedIds.includes(getItemUniqueId(item)),
   );
   const selectedTotal = selectedItems.reduce(
     (acc, item) => acc + item.totalPrice,
@@ -128,10 +133,11 @@ export default function CartPage() {
 
             {/* Loop Items */}
             {items.map((item) => {
-              const isChecked = selectedIds.includes(item.cartItemId);
+              const uniqueId = getItemUniqueId(item);
+              const isChecked = selectedIds.includes(uniqueId);
               return (
                 <div
-                  key={item.cartItemId}
+                  key={uniqueId}
                   className={`bg-white p-4 sm:p-5 rounded-2xl border transition shadow-sm flex items-center space-x-4 ${
                     isChecked
                       ? "border-amber-800/40 bg-amber-50/10"
@@ -142,7 +148,7 @@ export default function CartPage() {
                   <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => handleToggleSelect(item.cartItemId)}
+                    onChange={() => handleToggleSelect(item)}
                     className="w-4 h-4 rounded border-gray-300 text-amber-800 focus:ring-amber-800 cursor-pointer"
                   />
 

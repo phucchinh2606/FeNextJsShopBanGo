@@ -29,6 +29,10 @@ export const orderService = {
     return await axiosClient.get(`/Order/${id}`);
   },
 
+  confirmPayOSPayment: async (id: string): Promise<ApiResponse<boolean>> => {
+    return await axiosClient.post(`/Payment/payos/${id}/confirm`);
+  },
+
   // PUT: /api/Order/{id}/cancel (Khách hàng hủy đơn)
   cancelOrder: async (
     id: string,

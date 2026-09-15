@@ -1,9 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useGetOrderById } from "@/src/hooks/useOrder";
+import { useConfirmPayOSPayment, useGetOrderById } from "@/src/hooks/useOrder";
 import { OrderStatus, PaymentStatus, OrderDto } from "@/src/types";
 import { ArrowLeft, MapPin, CreditCard, PackageCheck } from "lucide-react";
 
@@ -15,9 +15,21 @@ export default function OrderDetailPage({
   const { id } = use(params);
   const searchParams = useSearchParams();
   const isSuccessRedirect = searchParams.get("success") === "true";
+  const isPayOSPaymentSuccessful =
+    searchParams.get("code") === "00" && searchParams.get("status") === "PAID";
 
-  const { data: orderResponse, isLoading } = useGetOrderById(id);
+  const { data: orderResponse, isLoading } = useGetOrderById(
+    id,
+    isSuccessRedirect,
+  );
+  const { mutate: confirmPayOSPayment } = useConfirmPayOSPayment();
   const order: OrderDto | undefined = orderResponse?.data;
+
+  useEffect(() => {
+    if (isSuccessRedirect && id) {
+      confirmPayOSPayment(id);
+    }
+  }, [confirmPayOSPayment, id, isSuccessRedirect]);
 
   if (isLoading) {
     return (
@@ -78,7 +90,8 @@ export default function OrderDetailPage({
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-6">
           <div>
             <h1 className="text-xl sm:text-2xl font-serif font-bold text-gray-900">
-              Mã Đơn: #{order.orderId.substring(0, 8).toUpperCase()}
+              Mã Đơn: #
+              {order.orderCode || order.orderId.substring(0, 8).toUpperCase()}
             </h1>
             <p className="text-xs text-gray-400 mt-1">
               Ngày đặt: {new Date(order.orderDate).toLocaleString("vi-VN")}
@@ -125,9 +138,12 @@ export default function OrderDetailPage({
                     : "text-amber-700"
                 }`}
               >
-                {order.paymentStatus === PaymentStatus.Paid
+                {order.paymentStatus === PaymentStatus.Paid ||
+                isPayOSPaymentSuccessful
                   ? "Đã thanh toán"
-                  : "Chưa thanh toán"}
+                  : isSuccessRedirect
+                    ? "Đang xác nhận thanh toán..."
+                    : "Chưa thanh toán"}
               </span>
             </p>
           </div>

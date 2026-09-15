@@ -72,7 +72,10 @@ export const OrderDetailModal = ({
         <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div>
             <h2 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-              <span>Đơn Hàng #{orderId.substring(0, 8).toUpperCase()}</span>
+              <span>
+                Mã Đơn: #
+                {order?.orderCode || orderId.substring(0, 8).toUpperCase()}
+              </span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Chi tiết và thiết lập trạng thái cho đơn hàng

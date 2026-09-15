@@ -158,7 +158,9 @@ export default function MyOrdersPage() {
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 text-xs">
                 <div className="flex items-center space-x-3">
                   <span className="font-bold text-gray-900">
-                    Đơn hàng #{order.orderId.substring(0, 8).toUpperCase()}
+                    Đơn hàng #
+                    {order.orderCode ||
+                      order.orderId.substring(0, 8).toUpperCase()}
                   </span>
                   <span className="text-gray-400 flex items-center space-x-1">
                     <Calendar className="w-3.5 h-3.5" />

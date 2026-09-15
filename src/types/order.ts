@@ -1,8 +1,6 @@
 export enum PaymentMethod {
   COD = 0,
-  VnPay = 1,
-  Momo = 2,
-  Stripe = 3,
+  PayOS = 1,
 }
 
 export enum PaymentStatus {
@@ -28,6 +26,7 @@ export interface OrderDetailDto {
 
 export interface OrderDto {
   orderId: string;
+  orderCode: number;
   userId: string;
   orderDate: string;
   totalAmount: number;
