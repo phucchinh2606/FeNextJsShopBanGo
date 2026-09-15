@@ -4,6 +4,7 @@ import "./globals.css";
 import ReactQueryProvider from "../providers/ReactQueryProvider";
 import { Toaster } from "sonner";
 import { ChatBotWidget } from "../components/client/ChatBotWidget";
+import { Suspense } from "react";
 
 // Font Sans-serif cho văn bản thường
 const inter = Inter({
@@ -35,7 +36,9 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <Suspense fallback={null}>{children}</Suspense>
+        </ReactQueryProvider>
         <Toaster position="top-right" richColors closeButton />
         {/* Tích hợp Widget ChatBot AI cố định toàn trang */}
         <ChatBotWidget />

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,9 +13,11 @@ import {
   Truck,
   ArrowRight,
   PhoneCall,
+  Loader2,
 } from "lucide-react";
 
-export default function AboutPage() {
+// 1. Component con chứa toàn bộ UI của trang About
+function AboutContent() {
   const stats = [
     { label: "Năm kinh nghiệm", value: "12+" },
     { label: "Dự án & Khách hàng", value: "8,500+" },
@@ -93,7 +96,6 @@ export default function AboutPage() {
       <section className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Hình ảnh đại diện */}
             <div className="lg:col-span-6 relative">
               <div className="relative aspect-[4/3] w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-50">
                 <Image
@@ -104,7 +106,6 @@ export default function AboutPage() {
                   className="object-cover"
                 />
               </div>
-              {/* Badge kinh nghiệm floating */}
               <div className="absolute -bottom-6 -right-2 sm:right-6 bg-amber-900 text-white p-6 rounded-2xl shadow-xl border border-amber-700 max-w-xs">
                 <div className="flex items-center space-x-3">
                   <Award className="w-8 h-8 text-amber-400 shrink-0" />
@@ -118,7 +119,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Nội dung giới thiệu */}
             <div className="lg:col-span-6 space-y-6">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-amber-800">
@@ -277,5 +277,23 @@ export default function AboutPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+// 2. Export default bọc trong Suspense Boundary
+export default function AboutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-3">
+          <Loader2 className="w-8 h-8 text-amber-800 animate-spin" />
+          <p className="text-xs font-semibold text-amber-900">
+            Đang tải trang giới thiệu...
+          </p>
+        </div>
+      }
+    >
+      <AboutContent />
+    </Suspense>
   );
 }

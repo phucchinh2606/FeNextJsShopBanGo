@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,9 +15,11 @@ import {
   ShieldCheck,
   ArrowLeft,
   Truck,
+  Loader2,
 } from "lucide-react";
 
-export default function CheckoutPage() {
+// 1. Component con chứa toàn bộ UI & Logic dùng useSearchParams()
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const itemIdsString = searchParams.get("items") || "";
@@ -39,7 +41,7 @@ export default function CheckoutPage() {
   const cart = cartResponse?.data;
   const allItems = cart?.items || [];
 
-  // Lọc sản phẩm chính xác (không phân biệt chữ hoa/thường và hỗ trợ mọi trường ID)
+  // Lọc sản phẩm chính xác
   const checkoutItems = allItems.filter((item) => {
     const currentItemId = (
       item.cartItemId ||
@@ -85,11 +87,9 @@ export default function CheckoutPage() {
       {
         onSuccess: (res) => {
           const orderData = res?.data;
-          // Nếu có link thanh toán PayOS (VietQR), chuyển hướng khách hàng sang cổng thanh toán
           if (orderData?.paymentUrl) {
             window.location.href = orderData.paymentUrl;
           } else {
-            // Thanh toán COD thành công -> chuyển về trang đơn hàng
             router.push(`/orders/${orderData?.orderId || ""}?success=true`);
           }
         },
@@ -321,5 +321,23 @@ export default function CheckoutPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+// 2. Export default bọc CheckoutContent trong <Suspense>
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-3">
+          <Loader2 className="w-8 h-8 text-amber-800 animate-spin" />
+          <p className="text-xs font-semibold text-amber-900">
+            Đang tải trang thanh toán...
+          </p>
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }
