@@ -1,11 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { User, LogOut, Package, Shield, UserCheck } from "lucide-react";
 import { useAuthStore } from "@/src/store/useAuthStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UserMenu = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, isAuthenticated, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout(); // Xóa cookie & localStorage
+    queryClient.clear(); // Clear cache giỏ hàng, profile cũ
+    router.push("/"); // Điều hướng về trang chủ
+  };
 
   if (!isAuthenticated || !user) {
     return (
@@ -19,7 +29,7 @@ export const UserMenu = () => {
     );
   }
 
-  // Kiểm tra vai trò Admin (Xử lý cho cả chuỗi "Admin" hoặc Enum UserRole.Admin)
+  // Kiểm tra vai trò Admin
   const isAdmin = user.role === "Admin" || (user.role as unknown) === 1;
 
   return (
@@ -42,7 +52,6 @@ export const UserMenu = () => {
 
         {/* Menu hiển thị riêng theo Role */}
         {isAdmin ? (
-          /* Dành riêng cho Admin */
           <Link
             href="/admin/dashboard"
             className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition"
@@ -51,7 +60,6 @@ export const UserMenu = () => {
             <span>Trang Admin</span>
           </Link>
         ) : (
-          /* Dành riêng cho User/Customer */
           <>
             <Link
               href="/profile"
@@ -75,7 +83,7 @@ export const UserMenu = () => {
 
         {/* Nút Đăng xuất */}
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left transition"
         >
           <LogOut className="w-4 h-4" />
