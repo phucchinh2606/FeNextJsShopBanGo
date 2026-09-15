@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "../providers/ReactQueryProvider";
 import { Toaster } from "sonner";
+import { ChatBotWidget } from "../components/client/ChatBotWidget";
 
 // Font Sans-serif cho văn bản thường
 const inter = Inter({
@@ -36,6 +37,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ReactQueryProvider>{children}</ReactQueryProvider>
         <Toaster position="top-right" richColors closeButton />
+        {/* Tích hợp Widget ChatBot AI cố định toàn trang */}
+        <ChatBotWidget />
       </body>
     </html>
   );
