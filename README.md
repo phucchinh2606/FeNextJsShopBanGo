@@ -2,6 +2,8 @@
 
 Giao diện cửa hàng trực tuyến đồ gỗ mỹ nghệ cao cấp **WOODSTORE**. Dự án được xây dựng bằng **Next.js 16 App Router**, **TypeScript**, **Tailwind CSS**, tích hợp thanh toán PayOS và Chatbot AI hỗ trợ tư vấn phong thủy.
 
+link live: https://fe-next-js-shop-ban-go.vercel.app/
+
 ---
 
 ## 🚀 Công Nghệ Sử Dụng
