@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 E-Commerce Wood Shop Frontend (Next.js 16)
 
-## Getting Started
+Giao diện cửa hàng trực tuyến đồ gỗ mỹ nghệ cao cấp **WOODSTORE**. Dự án được xây dựng bằng **Next.js 16 App Router**, **TypeScript**, **Tailwind CSS**, tích hợp thanh toán PayOS và Chatbot AI hỗ trợ tư vấn phong thủy.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Công Nghệ Sử Dụng
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* **Framework:** Next.js 16 (App Router + Turbopack)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS, Lucide React (Icons)
+* **State Management & Data Fetching:** TanStack Query (React Query), Zustand / Context API
+* **UI Components & Utilities:** Sonner (Toast Notifications)
+* **Deployment:** Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+✨ Tính Năng Chính
+Trang Chủ & Giới Thiệu: Giao diện sang trọng chuẩn nhận diện thương hiệu đồ gỗ, giới thiệu làng nghề & quy trình chế tác.
 
-## Learn More
+Danh Sách & Tìm Kiếm Sản Phẩm: Lọc sản phẩm theo danh mục, loại gỗ, khoảng giá và tìm kiếm thông minh.
 
-To learn more about Next.js, take a look at the following resources:
+Chi Tiết Sản Phẩm: Hình ảnh chất lượng cao, thông số kích thước chuẩn thước Lỗ Ban phong thủy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Giỏ Hàng & Đặt Hàng: Trải nghiệm mua sắm mượt mà, tích hợp thanh toán mã QR tự động qua PayOS.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Chatbot AI Tư Vấn: Widget Chatbot AI hỗ trợ giải đáp thắc mắc và tư vấn kích thước/chất liệu gỗ 24/7.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Admin Dashboard: Quản lý sản phẩm, đơn hàng, danh mục và thống kê doanh thu.
