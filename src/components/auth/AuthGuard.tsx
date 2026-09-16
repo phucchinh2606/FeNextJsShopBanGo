@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore, normalizeRole } from "@/src/store/useAuthStore";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -29,7 +29,13 @@ export const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
-      if (!user?.role || !allowedRoles.includes(user.role)) {
+      const normalizedUserRole = normalizeRole(user?.role);
+      const normalizedAllowedRoles = allowedRoles.map(normalizeRole);
+
+      if (
+        !normalizedUserRole ||
+        !normalizedAllowedRoles.includes(normalizedUserRole)
+      ) {
         router.push("/");
       }
     }
@@ -43,12 +49,16 @@ export const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
     );
   }
 
-  if (
-    allowedRoles &&
-    allowedRoles.length > 0 &&
-    (!user?.role || !allowedRoles.includes(user.role))
-  ) {
-    return null;
+  if (allowedRoles && allowedRoles.length > 0) {
+    const normalizedUserRole = normalizeRole(user?.role);
+    const normalizedAllowedRoles = allowedRoles.map(normalizeRole);
+
+    if (
+      !normalizedUserRole ||
+      !normalizedAllowedRoles.includes(normalizedUserRole)
+    ) {
+      return null;
+    }
   }
 
   return <>{children}</>;

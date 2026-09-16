@@ -18,7 +18,7 @@ export interface LoginResponseDto {
   refreshToken: string;
   email: string;
   fullName: string;
-  role: string;
+  role: string | number;
 }
 
 export interface AuthState {

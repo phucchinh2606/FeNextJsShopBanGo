@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   User,
   LogOut,
@@ -9,13 +11,16 @@ import {
   ShieldAlert,
   ChevronDown,
 } from "lucide-react";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore, normalizeRole } from "@/src/store/useAuthStore";
 
 export const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { user, isAuthenticated, logout } = useAuthStore();
+  const normalizedRole = normalizeRole(user?.role);
 
   // Đóng dropdown khi click bên ngoài menu
   useEffect(() => {
@@ -68,26 +73,7 @@ export const UserMenu = () => {
           </div>
 
           <div className="py-1">
-            <Link
-              href="/profile"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition"
-            >
-              <User className="w-4 h-4 text-slate-400" />
-              <span>Trang cá nhân</span>
-            </Link>
-
-            <Link
-              href="/orders"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center space-x-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition"
-            >
-              <PackageCheck className="w-4 h-4 text-slate-400" />
-              <span>Đơn hàng của tôi</span>
-            </Link>
-
-            {/* Link dành cho Admin */}
-            {user?.role === "admin" && (
+            {normalizedRole === "Admin" ? (
               <Link
                 href="/admin/dashboard"
                 onClick={() => setIsOpen(false)}
@@ -96,6 +82,26 @@ export const UserMenu = () => {
                 <ShieldAlert className="w-4 h-4 text-amber-700" />
                 <span>Trang Quản Trị</span>
               </Link>
+            ) : (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <User className="w-4 h-4 text-slate-400" />
+                  <span>Trang cá nhân</span>
+                </Link>
+
+                <Link
+                  href="/orders"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-2.5 px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 transition"
+                >
+                  <PackageCheck className="w-4 h-4 text-slate-400" />
+                  <span>Đơn hàng của tôi</span>
+                </Link>
+              </>
             )}
           </div>
 
@@ -104,6 +110,8 @@ export const UserMenu = () => {
               onClick={() => {
                 setIsOpen(false);
                 logout();
+                queryClient.clear();
+                router.push("/login");
               }}
               className="w-full flex items-center space-x-2.5 px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 transition text-left"
             >

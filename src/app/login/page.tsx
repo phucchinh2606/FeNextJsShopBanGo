@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/src/components/client/Header";
 import { Footer } from "@/src/components/client/Footer";
 import { useLogin } from "@/src/hooks/useAuth";
+import { normalizeRole } from "@/src/store/useAuthStore";
 import { Mail, Lock, Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
@@ -31,7 +32,11 @@ export default function LoginPage() {
       {
         onSuccess: (res) => {
           if (res.success) {
-            router.push("/");
+            const nextRoute =
+              normalizeRole(res.data?.role) === "Admin"
+                ? "/admin/dashboard"
+                : "/";
+            router.push(nextRoute);
           } else {
             setErrorMsg(res.message || "Đăng nhập thất bại. Vui lòng thử lại!");
           }

@@ -7,16 +7,17 @@ import { SearchBar } from "./SearchBar";
 import { UserMenu } from "./UserMenu";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useGetCart } from "@/src/hooks/useCart";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore, normalizeRole } from "@/src/store/useAuthStore";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const { data: cartResponse } = useGetCart();
   const cart = cartResponse?.data;
   const totalItems = cart?.totalItems || 0;
+  const isAdmin = normalizeRole(user?.role) === "Admin";
 
   // Xử lý khi bấm vào Giỏ hàng
   const handleCartClick = (e: React.MouseEvent) => {
@@ -87,18 +88,20 @@ export const Header = () => {
 
           {/* Right Action Icons (Cart & User Menu) */}
           <div className="flex items-center space-x-3 sm:space-x-6">
-            <Link
-              href="/cart"
-              onClick={handleCartClick}
-              className="relative p-2 text-gray-700 hover:text-amber-800 transition"
-            >
-              <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
-              {isAuthenticated && totalItems > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] sm:text-xs font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-amber-700 rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
+            {!isAdmin && (
+              <Link
+                href="/cart"
+                onClick={handleCartClick}
+                className="relative p-2 text-gray-700 hover:text-amber-800 transition"
+              >
+                <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
+                {isAuthenticated && totalItems > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] sm:text-xs font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-amber-700 rounded-full">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            )}
 
             <UserMenu />
           </div>
