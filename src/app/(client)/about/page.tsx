@@ -106,12 +106,14 @@ function AboutContent() {
                   className="object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-2 sm:right-6 bg-amber-900 text-white p-6 rounded-2xl shadow-xl border border-amber-700 max-w-xs">
+              <div className="absolute -bottom-4 right-3 sm:-bottom-6 sm:right-6 bg-amber-900 text-white p-4 sm:p-6 rounded-2xl shadow-xl border border-amber-700 max-w-[240px] sm:max-w-xs">
                 <div className="flex items-center space-x-3">
-                  <Award className="w-8 h-8 text-amber-400 shrink-0" />
+                  <Award className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400 shrink-0" />
                   <div>
-                    <p className="text-xl font-bold font-serif">12+ Năm</p>
-                    <p className="text-xs text-amber-200">
+                    <p className="text-base sm:text-xl font-bold font-serif">
+                      12+ Năm
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-amber-200">
                       Gắn bó & phát triển làng nghề gỗ mỹ nghệ
                     </p>
                   </div>

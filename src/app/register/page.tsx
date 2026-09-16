@@ -71,32 +71,32 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 flex items-center justify-center max-w-7xl w-full mx-auto px-4 py-12">
-        <div className="bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-sm max-w-lg w-full space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900">
+      <main className="flex-1 flex items-center justify-center max-w-7xl w-full mx-auto px-4 py-6 sm:py-12">
+        <div className="bg-white p-5 sm:p-10 rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm max-w-lg w-full space-y-5 sm:space-y-6">
+          <div className="text-center space-y-1.5 sm:space-y-2">
+            <h1 className="text-xl sm:text-3xl font-serif font-bold text-gray-900">
               Tạo Tài Khoản
             </h1>
-            <p className="text-xs text-gray-500">
+            <p className="text-[11px] sm:text-xs text-gray-500">
               Đăng ký để trải nghiệm mua sắm đồ gỗ mỹ nghệ cao cấp
             </p>
           </div>
 
           {errorMsg && (
-            <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-2xl flex items-center space-x-2">
+            <div className="p-3 sm:p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl sm:rounded-2xl flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold rounded-2xl flex items-center space-x-2">
+            <div className="p-3 sm:p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold rounded-xl sm:rounded-2xl flex items-center space-x-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">
                 Họ và Tên <span className="text-rose-500">*</span>
@@ -159,7 +159,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
                   Số điện thoại
@@ -196,7 +196,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full py-3.5 bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs rounded-xl shadow-lg shadow-amber-900/20 transition flex items-center justify-center space-x-2 disabled:opacity-50"
+              className="w-full py-3 sm:py-3.5 bg-amber-800 hover:bg-amber-900 text-white font-semibold text-xs rounded-xl shadow-lg shadow-amber-900/20 transition flex items-center justify-center space-x-2 disabled:opacity-50 mt-2"
             >
               <UserPlus className="w-4 h-4" />
               <span>
@@ -205,7 +205,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <div className="text-center border-t border-gray-100 pt-4 text-xs text-gray-500">
+          <div className="text-center border-t border-gray-100 pt-3.5 sm:pt-4 text-xs text-gray-500">
             Đã có tài khoản?{" "}
             <Link
               href="/login"
