@@ -82,17 +82,19 @@ export const CategoryModal = ({ category, onClose }: CategoryModalProps) => {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header Modal */}
-        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <h2 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-            <FolderTree className="w-4 h-4 text-amber-800" />
-            <span>{isEdit ? "Cập Nhật Danh Mục" : "Thêm Danh Mục Mới"}</span>
+        <div className="p-3.5 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center space-x-2">
+            <FolderTree className="w-4 h-4 text-amber-800 shrink-0" />
+            <span className="truncate">
+              {isEdit ? "Cập Nhật Danh Mục" : "Thêm Danh Mục Mới"}
+            </span>
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition"
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,17 +103,17 @@ export const CategoryModal = ({ category, onClose }: CategoryModalProps) => {
         {/* Form Body */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="p-4 sm:p-5 space-y-4 text-xs"
+          className="p-3.5 sm:p-5 overflow-y-auto space-y-3.5 sm:space-y-4 text-xs flex-1"
         >
           {/* Tên danh mục */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Tên danh mục *
+              Tên danh mục <span className="text-rose-500">*</span>
             </label>
             <input
               {...register("categoryName")}
               placeholder="Nhập tên danh mục (Ví dụ: Bàn Ghế, Sập Gụ...)"
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
             />
             {errors.categoryName && (
               <p className="text-rose-500 text-[11px]">
@@ -127,7 +129,7 @@ export const CategoryModal = ({ category, onClose }: CategoryModalProps) => {
             </label>
             <select
               {...register("parentId")}
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
             >
               <option value="">-- Là danh mục gốc --</option>
               {parentOptions.map((cat) => (
@@ -147,7 +149,7 @@ export const CategoryModal = ({ category, onClose }: CategoryModalProps) => {
               rows={3}
               {...register("description")}
               placeholder="Nhập mô tả ngắn cho danh mục này..."
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition resize-none"
             />
           </div>
 
@@ -156,14 +158,14 @@ export const CategoryModal = ({ category, onClose }: CategoryModalProps) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold"
+              className="px-3.5 sm:px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold text-xs"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold flex items-center space-x-1.5 disabled:opacity-50"
+              className="px-3.5 sm:px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold text-xs flex items-center space-x-1.5 disabled:opacity-50"
             >
               {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{isEdit ? "Cập Nhật" : "Tạo Danh Mục"}</span>

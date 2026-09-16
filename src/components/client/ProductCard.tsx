@@ -30,64 +30,66 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           src={product.imageUrl || "/placeholder-wood.jpg"}
           alt={product.productName}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover object-center group-hover:scale-105 transition duration-500"
         />
 
         {/* Status Badge */}
         {isOutOfStock && (
-          <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase">
+          <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-600 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded uppercase">
             Hết hàng
           </span>
         )}
 
-        {/* Hover Action Overlay */}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center space-x-2">
+        {/* Hover Action Overlay (Chỉ hiển thị nút trên Desktop) */}
+        <div className="hidden sm:flex absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition duration-300 items-center justify-center space-x-2">
           <Link
             href={`/products/${product.productId}`}
-            className="p-3 bg-white rounded-full text-gray-800 hover:text-amber-800 hover:scale-110 transition shadow-md"
+            className="p-2.5 sm:p-3 bg-white rounded-full text-gray-800 hover:text-amber-800 hover:scale-110 transition shadow-md"
             title="Xem chi tiết"
           >
-            <Eye className="w-5 h-5" />
+            <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
           {!isOutOfStock && (
             <button
               onClick={handleQuickAdd}
               disabled={isPending}
-              className="p-3 bg-amber-800 rounded-full text-white hover:bg-amber-900 hover:scale-110 transition shadow-md disabled:opacity-50"
+              className="p-2.5 sm:p-3 bg-amber-800 rounded-full text-white hover:bg-amber-900 hover:scale-110 transition shadow-md disabled:opacity-50"
               title="Thêm nhanh vào giỏ"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           )}
         </div>
       </div>
 
       {/* Product Details */}
-      <div className="p-4 flex flex-col flex-1 justify-between">
+      <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between">
         <div>
-          <span className="text-[11px] font-medium text-amber-700 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-[11px] font-medium text-amber-700 uppercase tracking-wider block">
             {product.categoryName}
           </span>
           <Link href={`/products/${product.productId}`}>
-            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-amber-800 transition line-clamp-2 mt-1">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-amber-800 transition line-clamp-2 mt-0.5 sm:mt-1">
               {product.productName}
             </h3>
           </Link>
-          <p className="text-xs text-gray-500 mt-1">Gỗ: {product.material}</p>
+          <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1">
+            Gỗ: {product.material}
+          </p>
         </div>
 
-        <div className="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
-          <div className="text-base font-bold text-amber-900">
+        <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-50 flex items-center justify-between">
+          <div className="text-xs sm:text-base font-bold text-amber-900">
             {product.price.toLocaleString("vi-VN")}{" "}
-            <span className="text-xs">đ</span>
+            <span className="text-[10px] sm:text-xs">đ</span>
           </div>
           <button
             onClick={handleQuickAdd}
             disabled={isOutOfStock || isPending}
-            className="text-xs font-semibold text-amber-800 hover:text-amber-900 disabled:text-gray-400"
+            className="text-[11px] sm:text-xs font-semibold text-amber-800 hover:text-amber-900 disabled:text-gray-400"
           >
-            {isPending ? "Đang thêm..." : "+ Thêm giỏ"}
+            {isPending ? "Đang..." : "+ Thêm"}
           </button>
         </div>
       </div>

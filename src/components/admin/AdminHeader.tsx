@@ -16,18 +16,17 @@ export const AdminHeader = ({ isOpen, setIsOpen }: HeaderProps) => {
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
-    logout(); // Xóa cookie & localStorage state
-    queryClient.clear(); // Xóa toàn bộ cache dữ liệu cũ
-    router.push("/"); // Tự động chuyển hướng về trang chủ
+    logout();
+    queryClient.clear();
+    router.push("/");
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-30">
-      <div className="flex items-center space-x-4">
-        {/* Nút mũi tên thu/phóng */}
+    <header className="h-16 bg-white border-b border-slate-200/80 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex items-center space-x-2 sm:space-x-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition"
+          className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition"
           aria-label="Toggle Sidebar"
         >
           <ChevronLeft
@@ -37,31 +36,32 @@ export const AdminHeader = ({ isOpen, setIsOpen }: HeaderProps) => {
           />
         </button>
 
-        <h1 className="text-sm font-bold text-slate-800">
-          Hệ thống Quản lý Bán hàng Đồ Gỗ
+        <h1 className="text-xs sm:text-sm font-bold text-slate-800 truncate max-w-[150px] sm:max-w-none">
+          Hệ thống Quản lý Bán hàng
         </h1>
       </div>
 
-      {/* Thông tin Admin & Nút Đăng xuất */}
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-full bg-amber-800 text-white flex items-center justify-center font-bold text-sm">
+      <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-amber-800 text-white flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
             {user?.fullName ? user.fullName.charAt(0).toUpperCase() : "A"}
           </div>
-          <div className="hidden sm:block text-xs">
-            <p className="font-bold text-slate-800">
+          <div className="hidden md:block text-xs">
+            <p className="font-bold text-slate-800 truncate max-w-[120px]">
               {user?.fullName || "Admin System"}
             </p>
-            <p className="text-slate-400">{user?.email || ""}</p>
+            <p className="text-slate-400 truncate max-w-[120px]">
+              {user?.email || ""}
+            </p>
           </div>
         </div>
 
         <button
           onClick={handleLogout}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition border border-rose-100"
+          className="flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition border border-rose-100"
         >
-          <LogOut className="w-4 h-4" />
-          <span>Đăng xuất</span>
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span className="hidden sm:inline">Đăng xuất</span>
         </button>
       </div>
     </header>

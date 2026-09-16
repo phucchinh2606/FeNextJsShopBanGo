@@ -45,7 +45,7 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
       title: "",
       summary: "",
       content: "",
-      authorId: "admin-id", // Thay thế bằng ID người dùng hiện tại nếu có
+      authorId: "admin-id",
       status: NewsStatus.Draft,
     },
   });
@@ -99,17 +99,19 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header Modal */}
-        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <h2 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-            <Newspaper className="w-4 h-4 text-amber-800" />
-            <span>{isEdit ? "Cập Nhật Bài Viết" : "Thêm Bài Viết Mới"}</span>
+        <div className="p-3.5 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center space-x-2">
+            <Newspaper className="w-4 h-4 text-amber-800 shrink-0" />
+            <span className="truncate">
+              {isEdit ? "Cập Nhật Bài Viết" : "Thêm Bài Viết Mới"}
+            </span>
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition"
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -118,17 +120,17 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
         {/* Form Body */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs"
+          className="p-3.5 sm:p-6 overflow-y-auto space-y-3.5 sm:space-y-4 flex-1 text-xs"
         >
           {/* Tiêu đề */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Tiêu đề bài viết *
+              Tiêu đề bài viết <span className="text-rose-500">*</span>
             </label>
             <input
               {...register("title")}
               placeholder="Nhập tiêu đề bài viết..."
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
             />
             {errors.title && (
               <p className="text-rose-500 text-[11px]">
@@ -137,15 +139,15 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {/* Trạng thái */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Trạng thái *
+                Trạng thái <span className="text-rose-500">*</span>
               </label>
               <select
                 {...register("status")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               >
                 <option value={NewsStatus.Draft}>Bản nháp (Draft)</option>
                 <option value={NewsStatus.Published}>
@@ -158,11 +160,11 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
             {/* Mã tác giả */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Mã Tác giả *
+                Mã Tác giả <span className="text-rose-500">*</span>
               </label>
               <input
                 {...register("authorId")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               />
               {errors.authorId && (
                 <p className="text-rose-500 text-[11px]">
@@ -175,13 +177,13 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
           {/* Tóm tắt ngắn */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Mô tả tóm tắt *
+              Mô tả tóm tắt <span className="text-rose-500">*</span>
             </label>
             <textarea
               rows={2}
               {...register("summary")}
               placeholder="Nhập phần tóm tắt ngắn bài viết..."
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition resize-none"
             />
             {errors.summary && (
               <p className="text-rose-500 text-[11px]">
@@ -193,13 +195,13 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
           {/* Nội dung bài viết */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Nội dung bài viết *
+              Nội dung bài viết <span className="text-rose-500">*</span>
             </label>
             <textarea
-              rows={6}
+              rows={5}
               {...register("content")}
               placeholder="Nhập nội dung đầy đủ bài viết..."
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
             />
             {errors.content && (
               <p className="text-rose-500 text-[11px]">
@@ -213,9 +215,9 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
             <label className="font-semibold text-slate-700">
               Ảnh đại diện bài viết
             </label>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               {imagePreview && (
-                <div className="relative w-16 h-16 rounded-xl border overflow-hidden shrink-0 bg-slate-50">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-50">
                   <Image
                     src={imagePreview}
                     alt="Preview"
@@ -224,9 +226,11 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
                   />
                 </div>
               )}
-              <label className="flex-1 flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition">
+              <label className="flex-1 flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 rounded-xl p-2.5 sm:p-3 cursor-pointer hover:bg-slate-50 transition">
                 <Upload className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-500 font-medium">Tải ảnh lên</span>
+                <span className="text-slate-500 font-medium text-xs">
+                  Tải ảnh lên
+                </span>
                 <input
                   type="file"
                   accept="image/*"
@@ -238,18 +242,18 @@ export const NewsModal = ({ newsItem, onClose }: NewsModalProps) => {
           </div>
 
           {/* Actions */}
-          <div className="pt-4 border-t border-slate-100 flex justify-end space-x-2">
+          <div className="pt-3.5 border-t border-slate-100 flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold"
+              className="px-3.5 sm:px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold text-xs"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold flex items-center space-x-1.5 disabled:opacity-50"
+              className="px-3.5 sm:px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold text-xs flex items-center space-x-1.5 disabled:opacity-50"
             >
               {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{isEdit ? "Cập Nhật" : "Đăng Bài"}</span>

@@ -12,12 +12,11 @@ export const ProductGallery = ({
   images,
   productName,
 }: ProductGalleryProps) => {
-  // Ảnh mặc định nếu không có danh sách
   const displayImages = images.length > 0 ? images : ["/placeholder-wood.jpg"];
   const [selectedImage, setSelectedImage] = useState(displayImages[0]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Ảnh Lớn Chính */}
       <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
         <Image
@@ -30,14 +29,14 @@ export const ProductGallery = ({
         />
       </div>
 
-      {/* Danh sách Ảnh Thu Nhỏ (Thumbnails) */}
+      {/* Thumbnails */}
       {displayImages.length > 1 && (
-        <div className="flex space-x-3 overflow-x-auto pb-2">
+        <div className="flex space-x-2 sm:space-x-3 overflow-x-auto pb-1 scrollbar-none">
           {displayImages.map((img, index) => (
             <button
               key={index}
               onClick={() => setSelectedImage(img)}
-              className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 shrink-0 transition ${
+              className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition ${
                 selectedImage === img
                   ? "border-amber-800 ring-2 ring-amber-800/20"
                   : "border-transparent opacity-70 hover:opacity-100"

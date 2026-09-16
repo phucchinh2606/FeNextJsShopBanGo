@@ -10,7 +10,6 @@ import { useCreateProduct, useUpdateProduct } from "@/src/hooks/useProduct";
 import { useGetCategories } from "@/src/hooks/useCategory";
 import { X, Upload, Loader2 } from "lucide-react";
 
-// Schema Validation với Zod
 const productSchema = z.object({
   categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
   productName: z.string().min(2, "Tên sản phẩm phải từ 2 ký tự"),
@@ -126,16 +125,16 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header Modal */}
-        <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <h2 className="text-base font-bold text-slate-900">
+        <div className="p-3.5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 truncate">
             {isEdit ? "Cập Nhật Sản Phẩm" : "Thêm Sản Phẩm Mới"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -144,17 +143,17 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
         {/* Form Body */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs"
+          className="p-3.5 sm:p-6 overflow-y-auto space-y-3.5 sm:space-y-4 flex-1 text-xs"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {/* Tên sản phẩm */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Tên sản phẩm *
+                Tên sản phẩm <span className="text-rose-500">*</span>
               </label>
               <input
                 {...register("productName")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
                 placeholder="Nhập tên sản phẩm..."
               />
               {errors.productName && (
@@ -166,10 +165,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
 
             {/* Danh mục */}
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Danh mục *</label>
+              <label className="font-semibold text-slate-700">
+                Danh mục <span className="text-rose-500">*</span>
+              </label>
               <select
                 {...register("categoryId")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               >
                 <option value="">-- Chọn danh mục --</option>
                 {categories.map((cat) => (
@@ -188,12 +189,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
             {/* Giá sản phẩm */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Giá bán (VNĐ) *
+                Giá bán (VNĐ) <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
                 {...register("price")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               />
               {errors.price && (
                 <p className="text-rose-500 text-[11px]">
@@ -205,12 +206,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
             {/* Số lượng tồn kho */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Số lượng tồn kho *
+                Số lượng tồn kho <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
                 {...register("stockQuantity")}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               />
               {errors.stockQuantity && (
                 <p className="text-rose-500 text-[11px]">
@@ -222,12 +223,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
             {/* Chất liệu */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Chất liệu gỗ *
+                Chất liệu gỗ <span className="text-rose-500">*</span>
               </label>
               <input
                 {...register("material")}
                 placeholder="Ví dụ: Gỗ Hương, Gỗ Gõ Đỏ..."
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               />
               {errors.material && (
                 <p className="text-rose-500 text-[11px]">
@@ -239,12 +240,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
             {/* Kích thước */}
             <div className="space-y-1">
               <label className="font-semibold text-slate-700">
-                Kích thước *
+                Kích thước <span className="text-rose-500">*</span>
               </label>
               <input
                 {...register("dimensions")}
                 placeholder="Ví dụ: 120 x 80 x 75 cm"
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
               />
               {errors.dimensions && (
                 <p className="text-rose-500 text-[11px]">
@@ -256,10 +257,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
 
           {/* Trạng thái kho */}
           <div className="space-y-1">
-            <label className="font-semibold text-slate-700">Trạng thái *</label>
+            <label className="font-semibold text-slate-700">
+              Trạng thái <span className="text-rose-500">*</span>
+            </label>
             <select
               {...register("status")}
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition"
             >
               <option value={ProductStatus.InStock}>Còn hàng</option>
               <option value={ProductStatus.OutOfStock}>Hết hàng</option>
@@ -272,12 +275,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
           {/* Mô tả */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Mô tả sản phẩm *
+              Mô tả sản phẩm <span className="text-rose-500">*</span>
             </label>
             <textarea
               rows={3}
               {...register("description")}
-              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800"
+              className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-800 transition resize-none"
               placeholder="Nhập thông tin chi tiết..."
             />
             {errors.description && (
@@ -290,11 +293,12 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
           {/* Ảnh chính */}
           <div className="space-y-1">
             <label className="font-semibold text-slate-700">
-              Ảnh đại diện sản phẩm {!isEdit && "*"}
+              Ảnh đại diện sản phẩm{" "}
+              {!isEdit && <span className="text-rose-500">*</span>}
             </label>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               {imagePreview && (
-                <div className="relative w-16 h-16 rounded-xl border overflow-hidden shrink-0 bg-slate-50">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl border border-slate-200 overflow-hidden shrink-0 bg-slate-50">
                   <Image
                     src={imagePreview}
                     alt="Preview"
@@ -303,9 +307,9 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
                   />
                 </div>
               )}
-              <label className="flex-1 flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition">
+              <label className="flex-1 flex items-center justify-center space-x-2 border-2 border-dashed border-slate-200 rounded-xl p-2.5 sm:p-3 cursor-pointer hover:bg-slate-50 transition">
                 <Upload className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-500 font-medium">
+                <span className="text-slate-500 font-medium text-xs">
                   Tải lên hình ảnh
                 </span>
                 <input
@@ -322,18 +326,18 @@ export const ProductModal = ({ product, onClose }: ProductModalProps) => {
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-4 border-t border-slate-100 flex justify-end space-x-2">
+          <div className="pt-3.5 border-t border-slate-100 flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold"
+              className="px-3.5 sm:px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl transition font-semibold text-xs"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold flex items-center space-x-1.5 disabled:opacity-50"
+              className="px-3.5 sm:px-4 py-2 bg-amber-800 text-white rounded-xl hover:bg-amber-900 transition font-semibold text-xs flex items-center space-x-1.5 disabled:opacity-50"
             >
               {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{isEdit ? "Cập Nhật" : "Thêm Mới"}</span>
