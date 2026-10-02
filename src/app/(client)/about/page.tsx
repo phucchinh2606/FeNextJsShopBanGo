@@ -85,8 +85,8 @@ function AboutContent() {
             Nâng Tầm Không Gian Sống Bằng Tinh Hoa Gỗ Việt
           </h1>
           <p className="text-amber-100/80 text-sm sm:text-base max-w-2xl mx-auto mt-4 leading-relaxed">
-            <strong>WOODSTORE</strong> tự hào mang đến những tác phẩm nội thất
-            gỗ tự nhiên sang trọng, kết hợp hài hòa giữa nét đẹp nghệ thuật
+            <strong>Đồ gỗ Phúc Chỉnh</strong> tự hào mang đến những tác phẩm nội
+            thất gỗ tự nhiên sang trọng, kết hợp hài hòa giữa nét đẹp nghệ thuật
             truyền thống và tiện nghi hiện đại.
           </p>
         </div>
@@ -100,7 +100,7 @@ function AboutContent() {
               <div className="relative aspect-[4/3] w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-50">
                 <Image
                   src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop"
-                  alt="Xưởng chế tác gỗ WOODSTORE"
+                  alt="Xưởng chế tác gỗ Đồ gỗ Phúc Chỉnh"
                   fill
                   priority
                   className="object-cover"
@@ -133,17 +133,17 @@ function AboutContent() {
 
               <p className="text-sm text-slate-600 leading-relaxed">
                 Xuất thân từ làng nghề đục chạm gỗ mỹ nghệ truyền thống,{" "}
-                <strong>WOODSTORE</strong> được thành lập với mục tiêu gìn giữ
-                và phát triển nét đẹp nguyên bản của gỗ tự nhiên trong từng ngôi
-                nhà Việt.
+                <strong>Đồ gỗ Phúc Chỉnh</strong> được thành lập với mục tiêu
+                gìn giữ và phát triển nét đẹp nguyên bản của gỗ tự nhiên trong
+                từng ngôi nhà Việt.
               </p>
 
               <p className="text-sm text-slate-600 leading-relaxed">
-                Mỗi bộ bàn ghế, giường ngủ hay bàn thờ tại WOODSTORE không đơn
-                thuần là một món đồ dùng, mà là một **tác phẩm nghệ thuật** được
-                các nghệ nhân thổi hồn vào từng đường chạm, đường vân. Chúng tôi
-                tin rằng không gian sống gỗ chuẩn phong thủy sẽ mang lại thịnh
-                vượng và an yên trọn đời cho gia chủ.
+                Mỗi bộ bàn ghế, giường ngủ hay bàn thờ tại Đồ gỗ Phúc Chỉnh
+                không đơn thuần là một món đồ dùng, mà là một **tác phẩm nghệ
+                thuật** được các nghệ nhân thổi hồn vào từng đường chạm, đường
+                vân. Chúng tôi tin rằng không gian sống gỗ chuẩn phong thủy sẽ
+                mang lại thịnh vượng và an yên trọn đời cho gia chủ.
               </p>
 
               <div className="space-y-2.5 pt-2">
@@ -257,8 +257,8 @@ function AboutContent() {
             Bạn Đang Tìm Kiếm Mẫu Nội Thất Gỗ Phù Hợp Với Gia Đình?
           </h2>
           <p className="text-xs sm:text-sm text-amber-100/80 max-w-2xl mx-auto leading-relaxed">
-            Liên hệ ngay với chuyên gia của WOODSTORE để được tư vấn kích thước
-            phong thủy, lựa chọn loại gỗ và nhận báo giá ưu đãi tại xưởng.
+            Liên hệ ngay với chuyên gia của Đồ gỗ Phúc Chỉnh để được tư vấn kích
+            thước phong thủy, lựa chọn loại gỗ và nhận báo giá ưu đãi tại xưởng.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link

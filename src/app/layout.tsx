@@ -21,8 +21,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "WoodStore - Nội Thất Gỗ Mỹ Nghệ",
-  description: "Cửa hàng bán đồ gỗ mỹ nghệ cao cấp",
+  title: "Đồ gỗ Phúc Chỉnh - Nội Thất Gỗ Mỹ Nghệ",
+  description:
+    "Đồ gỗ Phúc Chỉnh - cửa hàng đồ gỗ mỹ nghệ và nội thất gỗ tự nhiên cao cấp.",
 };
 
 export default function RootLayout({

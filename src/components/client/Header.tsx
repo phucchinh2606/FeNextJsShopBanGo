@@ -47,8 +47,9 @@ export const Header = () => {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl sm:text-2xl font-bold tracking-tight text-amber-900 font-serif">
-                WOOD<span className="text-amber-600">STORE</span>
+              <span className="text-sm sm:text-lg font-bold text-amber-900 font-serif leading-tight">
+                Đồ gỗ
+                <span className="block text-amber-600">Phúc Chỉnh</span>
               </span>
             </Link>
           </div>

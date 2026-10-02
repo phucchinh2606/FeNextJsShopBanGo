@@ -15,8 +15,8 @@ export const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Cột 1: Thông tin thương hiệu */}
           <div className="space-y-3 sm:space-y-4">
-            <h3 className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-white">
-              WOOD<span className="text-amber-500">STORE</span>
+            <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">
+              Đồ gỗ <span className="text-amber-500">Phúc Chỉnh</span>
             </h3>
             <p className="text-xs sm:text-sm text-amber-200/80 leading-relaxed">
               Chuyên cung cấp các sản phẩm đồ gỗ mỹ nghệ, nội thất gỗ tự nhiên
@@ -129,16 +129,16 @@ export const Footer = () => {
               <li className="flex items-start space-x-2.5">
                 <MapPin className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                 <span className="text-amber-200/80">
-                  123 Làng Nghề Đồ Gỗ, Hà Nội
+                  Làng nghề đồ gỗ Châu Phong, Xã Thư Lâm, Thành phố Hà Nội
                 </span>
               </li>
               <li className="flex items-center space-x-2.5">
                 <Phone className="w-4 h-4 text-amber-500 shrink-0" />
-                <span className="text-amber-200/80">0988 123 456</span>
+                <span className="text-amber-200/80">0899727854</span>
               </li>
               <li className="flex items-center space-x-2.5">
                 <Mail className="w-4 h-4 text-amber-500 shrink-0" />
-                <span className="text-amber-200/80">contact@woodstore.com</span>
+                <span className="text-amber-200/80">chinhdo266@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -149,7 +149,8 @@ export const Footer = () => {
       <div className="border-t border-amber-900/60 bg-amber-950/80 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[11px] sm:text-xs text-amber-300/60">
           <p>
-            © {new Date().getFullYear()} WOODSTORE. Tất cả quyền được bảo lưu.
+            © {new Date().getFullYear()} Đồ gỗ Phúc Chỉnh. Tất cả quyền được bảo
+            lưu.
           </p>
         </div>
       </div>
