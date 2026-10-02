@@ -1,3 +1,4 @@
+import { BackendNotice } from "../components/client/BackendNotice";
 import { FeaturedCategories } from "../components/client/FeaturedCategories";
 import { FeaturedProducts } from "../components/client/FeaturedProducts";
 import { Footer } from "../components/client/Footer";
@@ -9,6 +10,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
+      <BackendNotice />
       <main className="flex-1">
         <HeroBanner />
         <FeaturedCategories />
